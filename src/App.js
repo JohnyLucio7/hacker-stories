@@ -33,6 +33,7 @@ function App() {
       <hr></hr>
 
       <List />
+      <List />
 
     </div>
   );
