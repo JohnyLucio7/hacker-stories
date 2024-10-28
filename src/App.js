@@ -1,6 +1,8 @@
 import './App.css';
 import React from 'react';
 
+const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
+
 const useSemiPersistentState = (key, initialState) => {
 
   let [value, setValue] = React.useState(localStorage.getItem(key) || initialState);
@@ -46,11 +48,11 @@ const storiesReducer = (state, action) => {
   }
 };
 
-const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
-
 const App = () => {
 
   const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'React');
+
+  const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`);
 
   const [stories, dispatchStories] = React.useReducer(
     storiesReducer,
@@ -62,12 +64,9 @@ const App = () => {
   );
 
   const handleFetchStories = React.useCallback(() => {
-
-    if (!searchTerm) return;
-
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
-    fetch(`${API_ENDPOINT}${searchTerm}`)
+    fetch(url)
       .then((response) => response.json())
       .then((result) => {
         dispatchStories({
@@ -78,8 +77,7 @@ const App = () => {
       .catch(() => dispatchStories({
         type: 'STORIES_FETCH_FAILURE'
       }));
-  }, [searchTerm]);
-
+  }, [url]);
 
   React.useEffect(() => {
     handleFetchStories();
@@ -92,9 +90,13 @@ const App = () => {
     });
   };
 
-  const handleSearch = (event) => {
+  const handleSearchInput = (event) => {
     setSearchTerm(event.target.value);
   };
+
+  const handleSearchSubmit = () => {
+    setUrl(`${API_ENDPOINT}${searchTerm}`)
+  }
 
   return (
     <div>
@@ -107,10 +109,18 @@ const App = () => {
         id="search"
         value={searchTerm}
         isFocused
-        onInputChange={handleSearch}
+        onInputChange={handleSearchInput}
       >
         <strong>Search:</strong>
       </InputWithLabel>
+
+      <button
+        type='button'
+        disabled={!searchTerm}
+        onClick={handleSearchSubmit}
+      >
+        Submit
+      </button>
 
       <hr />
       {stories.isError && <p>Something went wrong...</p>}
