@@ -135,6 +135,15 @@ const storiesReducer = (state, action) => {
   }
 };
 
+const getSumComments = (stories) => {
+  console.log('C');
+
+  return stories.data.reduce(
+    (result, value) => result + value.num_comments,
+    0
+  );
+};
+
 const App = () => {
 
   const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'React');
@@ -193,10 +202,14 @@ const App = () => {
 
   console.log('B:App');
 
+  const sumComments = React.useMemo(() => getSumComments(stories), [stories]);
+
+
+
   return (
     <StyledContainer>
 
-      <StyledHeadlinePrimary>My Hacker Stories!</StyledHeadlinePrimary>
+      <StyledHeadlinePrimary>My Hacker Stories with {sumComments} comments!</StyledHeadlinePrimary>
 
       <SearchForm
         searchTerm={searchTerm}
