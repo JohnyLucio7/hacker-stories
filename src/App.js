@@ -81,7 +81,6 @@ const StyledInput = styled.input`
   font-size: 24px;
 `;
 
-
 const useSemiPersistentState = (key, initialState) => {
 
   const isMounted = React.useRef(false);
@@ -92,7 +91,6 @@ const useSemiPersistentState = (key, initialState) => {
     if (isMounted.current) {
       isMounted.current = true;
     } else {
-      console.log('A');
       localStorage.setItem(key, value);
     }
 
@@ -176,12 +174,12 @@ const App = () => {
     handleFetchStories();
   }, [handleFetchStories]);
 
-  const handleRemoveStory = (item) => {
+  const handleRemoveStory = React.useCallback((item) => {
     dispatchStories({
       type: 'REMOVE_STORY',
       payload: item,
     });
-  };
+  }, []);
 
   const handleSearchInput = (event) => {
     setSearchTerm(event.target.value);
@@ -192,6 +190,8 @@ const App = () => {
 
     event.preventDefault();
   }
+
+  console.log('B:App');
 
   return (
     <StyledContainer>
@@ -209,7 +209,6 @@ const App = () => {
     </StyledContainer>
   );
 }
-
 
 const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => (
   <StyledSearchForm onSubmit={onSearchSubmit} >
@@ -255,16 +254,18 @@ const InputWithLabel = ({ id, value, type = 'text', onInputChange, isFocused, ch
   );
 }
 
-const List = ({ list, onRemoveItem }) => (
-  <ul>
-    {list.map((item) => (
-      <Item
-        key={item.objectID}
-        item={item}
-        onRemoveItem={onRemoveItem}
-      />
-    ))}
-  </ul>
+const List = React.memo(
+  ({ list, onRemoveItem }) => console.log('B:List') || (
+    <ul>
+      {list.map((item) => (
+        <Item
+          key={item.objectID}
+          item={item}
+          onRemoveItem={onRemoveItem}
+        />
+      ))}
+    </ul>
+  )
 );
 
 const Item = ({ item, onRemoveItem }) => (
