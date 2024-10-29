@@ -84,9 +84,19 @@ const StyledInput = styled.input`
 
 const useSemiPersistentState = (key, initialState) => {
 
-  let [value, setValue] = React.useState(localStorage.getItem(key) || initialState);
+  const isMounted = React.useRef(false);
 
-  React.useEffect(() => { localStorage.setItem(key, value); }, [value, key]);
+  const [value, setValue] = React.useState(localStorage.getItem(key) || initialState);
+
+  React.useEffect(() => {
+    if (isMounted.current) {
+      isMounted.current = true;
+    } else {
+      console.log('A');
+      localStorage.setItem(key, value);
+    }
+
+  }, [value, key]);
 
   return [value, setValue];
 };
