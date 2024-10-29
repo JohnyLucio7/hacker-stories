@@ -1,4 +1,4 @@
-import './App.css';
+import styles from './App.module.css';
 import React from 'react';
 import axios from 'axios';
 
@@ -106,9 +106,9 @@ const App = () => {
   }
 
   return (
-    <div className='container'>
+    <div className={styles.container}>
 
-      <h1 className='headline-primary'>My Hacker Stories!</h1>
+      <h1 className={styles.headlinePrimary}>My Hacker Stories!</h1>
 
       <SearchForm
         searchTerm={searchTerm}
@@ -124,7 +124,7 @@ const App = () => {
 
 
 const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => (
-  <form onSubmit={onSearchSubmit} className='search-form'>
+  <form onSubmit={onSearchSubmit} className={styles.searchForm}>
     <InputWithLabel
       id="search"
       value={searchTerm}
@@ -137,7 +137,7 @@ const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => (
     <button
       type='button'
       disabled={!searchTerm}
-      className='button button_large'
+      className={`${styles.button} ${styles.buttonLarge}`}
     >
       Submit
     </button>
@@ -156,14 +156,14 @@ const InputWithLabel = ({ id, value, type = 'text', onInputChange, isFocused, ch
 
   return (
     <>
-      <label htmlFor={id} className='label'>{children}</label> &nbsp;
+      <label htmlFor={id} className={styles.label}>{children}</label> &nbsp;
       <input
         ref={inputRef}
         id={id}
         type={type}
         value={value}
         onChange={onInputChange}
-        className='input'
+        className={styles.input}
       />
     </>
   );
@@ -182,7 +182,7 @@ const List = ({ list, onRemoveItem }) => (
 );
 
 const Item = ({ item, onRemoveItem }) => (
-  <li className='item'>
+  <li className={styles.item}>
     <span style={{ width: '40%' }}>
       <a href={item.url}>{item.title}</a>
     </span>
@@ -193,7 +193,7 @@ const Item = ({ item, onRemoveItem }) => (
       <button
         type='button'
         onClick={() => onRemoveItem(item)}
-        className='button button_small'>
+        className={`${styles.button} ${styles.buttonSmall}`}>
         Dismiss
       </button>
     </span>
