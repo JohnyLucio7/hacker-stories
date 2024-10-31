@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { storiesReducer } from './App';
+import { storiesReducer, Item, SearchForm } from './App';
+import { render, screen, fireEvent, act, } from '@testing-library/react';
 
 // Exemplos de histórias
 const storyOne = {
@@ -36,4 +37,71 @@ describe('storiesReducer', () => {
 
     expect(newState).toStrictEqual(expectedState);
   });
+});
+
+describe('Item', () => {
+  test('render all properties', () => {
+    render(<Item item={storyOne} />);
+
+    expect(screen.getByText('Jordan Walke')).toBeInTheDocument();
+    expect(screen.getByText('React')).toHaveAttribute(
+      'href',
+      'https://reactjs.org/'
+    );
+  });
+
+
+  test('renders a clickable dismiss button', () => {
+    render(<Item item={storyOne} />);
+
+    expect(screen.getByRole('button')).toBeInTheDocument();
+  });
+
+  test('Clicking the dismiss button calls the callback handler', () => {
+    const handleRemoveItem = jest.fn();
+
+    render(<Item item={storyOne} onRemoveItem={handleRemoveItem} />)
+
+    fireEvent.click(screen.getByRole('button'));
+
+    expect(handleRemoveItem).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('SearchForm', () => {
+  const searchFormProps = {
+    searchTerm: 'React',
+    onSearchInput: jest.fn(),
+    onSearchSubmit: jest.fn(),
+  };
+
+  test('render the input field with its values', () => {
+    render(<SearchForm {...searchFormProps} />);
+
+    expect(screen.getByDisplayValue('React')).toBeInTheDocument();
+  });
+
+  test('renders the correct label', () => {
+
+    render(<SearchForm {...searchFormProps} />);
+
+    expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
+  });
+
+  test('Calls onSearchInput on input field change', () => {
+    render(<SearchForm {...searchFormProps} />);
+
+    fireEvent.change(screen.getByDisplayValue('React'), { target: { value: 'Redux' }, });
+
+    expect(searchFormProps.onSearchInput).toHaveBeenCalledTimes(1);
+  });
+
+  test('calls on SearchSubmit on button submit click', () => {
+    render(<SearchForm {...searchFormProps} />);
+
+    fireEvent.submit(screen.getByRole('button'));
+
+    expect(searchFormProps.onSearchSubmit).toHaveBeenCalledTimes(1);
+  });
+
 });
