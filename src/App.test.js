@@ -107,6 +107,11 @@ describe('SearchForm', () => {
     expect(searchFormProps.onSearchSubmit).toHaveBeenCalledTimes(1);
   });
 
+  test('renders snapshot', () => {
+    const { container } = render(<SearchForm {...searchFormProps} />);
+    expect(container.firstChild).toMatchSnapshot();
+  });
+
 });
 
 describe('App', () => {
@@ -240,9 +245,5 @@ describe('App', () => {
     expect(screen.queryByText('Jordan Walke')).toBeNull();
     expect(screen.queryByText('Dan Abramov, Andrew Clark')).toBeNull();
     expect(screen.queryByText('Brendan Eich')).toBeInTheDocument();
-
   });
-
-
-
 });
