@@ -53,4 +53,4 @@ const Item = ({ item, onRemoveItem }: ItemProps) => (
     </li>
 );
 
-export { List, Story }
+export { List, Story, Stories }
