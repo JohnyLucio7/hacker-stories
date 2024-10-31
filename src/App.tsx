@@ -2,7 +2,7 @@ import * as React from 'react';
 import axios from 'axios';
 import './App.css';
 
-import { List } from './List.tsx';
+import { List, Story } from './List.tsx';
 import { InputWithLabel } from './InputWithLabel.tsx';
 import { SearchForm } from './SearchForm.tsx';
 
