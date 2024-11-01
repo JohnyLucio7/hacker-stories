@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { sortBy } from 'lodash';
 
 type Story = {
     objectID: string;
@@ -21,17 +22,53 @@ type ListProps = {
     onRemoveItem: (item: Story) => void;
 };
 
-const List = ({ list, onRemoveItem }: ListProps) => (
-    <ul>
-        {list.map((item) => (
-            <Item
-                key={item.objectID}
-                item={item}
-                onRemoveItem={onRemoveItem}
-            />
-        ))}
-    </ul>
-);
+const SORTS = {
+    NONE: (list: Stories) => list,
+    TITLE: (list: Stories) => sortBy(list, 'title'),
+    AUTHOR: (list: Stories) => sortBy(list, 'author'),
+    COMMENT: (list: Stories) => sortBy(list, 'num_comments').reverse(),
+    POINT: (list: Stories) => sortBy(list, 'points').reverse(),
+};
+
+
+const List = ({ list, onRemoveItem }: ListProps) => {
+
+    const [sort, setSort] = React.useState('NONE');
+
+    const handleSort = (sortKey: string) => {
+        setSort(sortKey);
+    }
+
+    const sortFunction = SORTS[sort];
+    const sortedList = sortFunction(list);
+
+    return (
+        <ul>
+            <li style={{ display: 'flex' }}>
+                <span style={{ width: '40%' }}>
+                    <button className='button buttonSmall' type='button' onClick={() => handleSort('TITLE')}>Title</button>
+                </span>
+                <span style={{ width: '30%' }}>
+                    <button className='button buttonSmall' type='button' onClick={() => handleSort('AUTHOR')}>Author</button>
+                </span>
+                <span style={{ width: '10%' }}>
+                    <button className='button buttonSmall' type='button' onClick={() => handleSort('COMMENT')}>COMMENT</button>
+                </span>
+                <span style={{ width: '10%' }}>
+                    <button className='button buttonSmall' type='button' onClick={() => handleSort('POINT')}>Points</button>
+                </span>
+                <span style={{ width: '10%' }}>Actions</span>
+            </li>
+            {sortedList.map((item) => (
+                <Item
+                    key={item.objectID}
+                    item={item}
+                    onRemoveItem={onRemoveItem}
+                />
+            ))}
+        </ul>
+    );
+}
 
 const Item = ({ item, onRemoveItem }: ItemProps) => (
     <li className='item'>
