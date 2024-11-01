@@ -43,7 +43,7 @@ const List = ({ list, onRemoveItem }: ListProps) => {
         const isReverse = sort.sortKey === sortKey && !sort.isReverse;
 
         setSort({ sortKey, isReverse });
-    }
+    };
 
     const sortFunction = SORTS[sort.sortKey];
 
